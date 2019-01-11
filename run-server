@@ -1,0 +1,10 @@
+docker run \
+  --name fulcrum-tiler \
+  --rm \
+  -v /Users:/host/Users \
+  -v $(pwd)/input:/input \
+  -v $(pwd)/output:/output \
+  -v $(pwd)/app:/root/Documents/MapBox \
+  -p 20009:20009 \
+  -p 20008:20008 \
+  -it fulcrum-tiler:latest
