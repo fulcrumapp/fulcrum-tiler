@@ -8,7 +8,7 @@ WORKDIR /tileoven
 
 RUN npm install
 
-COPY start.sh /tileoven/start.sh
+COPY scripts/start.sh /tileoven/start.sh
 COPY scripts /tileoven/scripts
 
 RUN cd /tileoven/scripts && bundle install
