@@ -7,4 +7,4 @@ docker run \
   -v $(pwd)/app:/root/Documents/MapBox \
   -p 20009:20009 \
   -p 20008:20008 \
-  -it fulcrum-tiler:latest
+  -it fulcrumapp/tiler:latest

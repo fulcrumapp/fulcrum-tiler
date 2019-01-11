@@ -9,5 +9,5 @@ docker run \
   -p 20008:20008 \
   -it \
   --entrypoint="" \
-  fulcrum-tiler:latest \
+  fulcrumapp/tiler:latest \
   bash
