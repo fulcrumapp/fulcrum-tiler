@@ -70,7 +70,15 @@ if base.endswith(".shp"):
     except:
         pass
 
-run_command = 'bash -c "cd /tileoven/scripts && ruby mbtiles.rb export %s --file %s"' % (' '.join(sys.argv[1:]), base)
+args = []
+
+for arg in sys.argv[1:]:
+    if arg.startswith("--"):
+        args.append(arg)
+    else:
+        args.append("'" + arg + "'")
+
+run_command = 'bash -c "cd /tileoven/scripts && ruby mbtiles.rb export --file %s %s"' % (base, ' '.join(args))
 
 command = 'docker run --name fulcrum-tiler --rm -v %s:/input -v %s:/output -v %s:/root/Documents/MapBox -it --entrypoint="" fulcrum-tiler:latest %s' % (input_path, output_path, app_path, run_command)
 

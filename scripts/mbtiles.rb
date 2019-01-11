@@ -53,6 +53,8 @@ class CLI < Thor
 
       input = File.join('/input', options[:file])
 
+      puts "OPTIONS: #{options.inspect}"
+
       text_name = options[:text_name]
       template_teaser = options[:template_teaser]
       template_full = options[:template_full] || template_teaser
@@ -84,7 +86,7 @@ class CLI < Thor
       project_file['Layer'][0]['extent'] = info[:extents]
 
       if template_teaser
-        template_full ||= teaser
+        template_full ||= template_teaser
 
         project_file['interactivity'] = {
           layer: "data",
@@ -205,8 +207,10 @@ class CLI < Thor
     def stylesheet(mss, info)
       declarations = []
 
+      geom_type = geometry_type(info[:type])
+
       PROPERTIES.each do |prop|
-        next if info[:type] != 'polygon' && prop.to_s =~ /polygon/
+        next if geom_type != 'polygon' && prop.to_s =~ /polygon/
 
         if options[prop]
           brackets = [:text_name].include?(prop)
