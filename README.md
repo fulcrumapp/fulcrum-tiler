@@ -2,6 +2,15 @@
 
 Create styled MBTiles from vector data using the command line.
 
+## Features
+
+* Simple rendering of GIS data to styled .mbtiles
+* Supports GeoJSON, Shapefile, and KML
+* Automatic projection conversion so most input files should "just work"
+* Automatic detection of the bounds of the data
+* Polygon labeling using a custom attribute
+* Interactivity using custom data attributes
+
 ## Requirements
 
 * Python
