@@ -216,6 +216,10 @@ class CLI < Thor
           brackets = [:text_name].include?(prop)
           quotes = [:text_face_name].include?(prop)
 
+          text_attribute = prop =~ /^text/
+
+          next if text_attribute && !options[:text_name]
+
           value = options[prop]
           value = "[#{value}]" if brackets
           value = "'#{value}'" if quotes
@@ -232,8 +236,11 @@ class CLI < Thor
     def geometry_type(type)
       {
         'Polygon' => 'polygon',
+        '3D Polygon' => 'polygon',
         'Line String' => 'linestring',
-        'Point' => 'point'
+        '3D Line String' => 'linestring',
+        'Point' => 'point',
+        '3D Point' => 'point'
       }[type] || 'polygon'
     end
   end
