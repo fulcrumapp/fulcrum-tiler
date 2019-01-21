@@ -111,7 +111,7 @@ class CLI < Thor
     end
 
     def transform!(input, info)
-      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input/input-transformed.db #{input} #{info[:name]}"
+      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input/input-transformed.db #{input} #{info[:name]} -dim 2"
 
       puts command
 
