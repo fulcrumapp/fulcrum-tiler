@@ -72,7 +72,7 @@ class CLI < Thor
 
       transform!(input, source_info)
 
-      input = '/input/input-transformed.db'
+      input = '/input-transformed.db'
 
       print_header "Loading transformed layer info"
 
@@ -111,7 +111,7 @@ class CLI < Thor
     end
 
     def transform!(input, info)
-      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input/input-transformed.db #{input} #{info[:name]} -dim 2"
+      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input-transformed.db #{input} #{info[:name]} -dim 2"
 
       puts command
 
@@ -146,11 +146,7 @@ class CLI < Thor
         "--maxzoom=#{options[:max_zoom]}"
       ].join(" ")
 
-      output_root = File.join("/output", project_name)
-
-      FileUtils.mkdir_p(output_root)
-
-      output_path = File.join(output_root, "output.mbtiles")
+      output_path = "/output.mbtiles"
 
       command = "node index.js export #{project_name} #{output_path} #{args}"
 
@@ -167,7 +163,6 @@ class CLI < Thor
       final_path = File.join("/output", output_filename)
 
       FileUtils.mv(output_path, final_path)
-      FileUtils.rm_rf(output_root)
 
       puts "Finished writing MBTiles file to #{final_path}"
     end

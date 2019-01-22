@@ -80,7 +80,7 @@ for arg in sys.argv[1:]:
 
 run_command = 'bash -c "cd /tileoven/scripts && ruby mbtiles.rb export --file %s %s"' % (base, ' '.join(args))
 
-command = 'docker pull fulcrumapp/tiler && docker run --name fulcrum-tiler --rm -v %s:/input -v %s:/output -v %s:/root/Documents/MapBox -it --entrypoint="" fulcrumapp/tiler:latest %s' % (input_path, output_path, app_path, run_command)
+command = 'docker pull fulcrumapp/tiler && docker run --name fulcrum-tiler --memory 4gb --rm -v %s:/input -v %s:/output -v %s:/root/Documents/MapBox -it --entrypoint="" fulcrumapp/tiler:latest %s' % (input_path, output_path, app_path, run_command)
 
 print command
 
