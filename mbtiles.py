@@ -6,10 +6,18 @@ import sys
 parser = ArgumentParser()
 parser.add_argument("--input", dest="input", required=True,
                     help="input file")
+parser.add_argument("--layer-name", dest="layer_name",
+                    help="input layer name (default: the first layer)")
+parser.add_argument("--geometry-type", dest="geometry_type",
+                    help="input geometry type (default: autodetect) one of: polygon, linestring, point")
 parser.add_argument("--min-zoom", dest="min_zoom", default=2,
                     help="min zoom")
 parser.add_argument("--max-zoom", dest="max_zoom", default=12,
                     help="max zoom")
+parser.add_argument("--marker-fill", dest="marker_fill", default="#c10505",
+                    help="marker fill color")
+parser.add_argument("--marker-width", dest="marker_width", default=8,
+                    help="marker width")
 parser.add_argument("--line-width", dest="line_width", default=0.5,
                     help="line width")
 parser.add_argument("--line-color", dest="line_color", default="#594",

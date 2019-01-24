@@ -6,6 +6,9 @@ require 'fileutils'
 PROPERTIES = [
   :line_width,
   :line_color,
+  :marker_fill,
+  :marker_width,
+  :marker_allow_overlap,
   :polygon_fill,
   :polygon_opacity,
   :text_name,
@@ -16,8 +19,13 @@ class CLI < Thor
   desc "export file", "export data as MBTiles"
   option :input, type: :string
   option :file, type: :string
+  option :layer_name, type: :string
+  option :geometry_type, type: :string
   option :max_zoom, type: :numeric, default: 12
   option :min_zoom, type: :numeric, default: 2
+  option :marker_fill, type: :string, default: '#c10505'
+  option :marker_width, type: :numeric, default: 8
+  option :marker_allow_overlap, type: :boolean, default: true
   option :line_width, type: :numeric, default: 0.5
   option :line_color, type: :string, default: '#594'
   option :polygon_fill, type: :string, default: '#ae8'
@@ -66,7 +74,7 @@ class CLI < Thor
 
       print_header "Loading source layer info"
 
-      source_info = layer_info(input)
+      source_info = layer_info(input, options[:layer_name])
 
       print_header "Transforming layer"
 
@@ -76,13 +84,15 @@ class CLI < Thor
 
       print_header "Loading transformed layer info"
 
-      info = layer_info(input)
+      info = layer_info(input, 'input')
+
+      geom_type = options[:geometry_type] || geometry_type(info[:type])
 
       project_file['Layer'][0]['Datasource']['file'] = input
-      project_file['Layer'][0]['Datasource']['layer'] = info[:name]
+      project_file['Layer'][0]['Datasource']['layer'] = 'input'
       project_file['Layer'][0]['Datasource']['type'] = 'sqlite'
-      project_file['Layer'][0]['Datasource']['table'] = info[:name]
-      project_file['Layer'][0]['geometry'] = geometry_type(info[:type])
+      project_file['Layer'][0]['Datasource']['table'] = 'input'
+      project_file['Layer'][0]['geometry'] = geom_type
       project_file['Layer'][0]['extent'] = info[:extents]
 
       if template_teaser
@@ -97,7 +107,7 @@ class CLI < Thor
 
       print_header "Creating project and stylesheet"
 
-      mss = stylesheet(mss_file, info)
+      mss = stylesheet(mss_file, info, geom_type)
 
       puts "Stylesheet:\n\n#{mss}"
 
@@ -111,7 +121,7 @@ class CLI < Thor
     end
 
     def transform!(input, info)
-      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input-transformed.db #{input} #{info[:name]} -dim 2"
+      command = "ogr2ogr -f SQLite -t_srs 'EPSG:4326' /input-transformed.db #{input} \"#{info[:name]}\" -nln input -dim 2"
 
       puts command
 
@@ -163,11 +173,12 @@ class CLI < Thor
       final_path = File.join("/output", output_filename)
 
       FileUtils.mv(output_path, final_path)
+      FileUtils.cp('/input-transformed.db', '/output/input.db')
 
       puts "Finished writing MBTiles file to #{final_path}"
     end
 
-    def layer_info(layer_path)
+    def layer_info(layer_path, layer_name=nil)
       info = `ogrinfo #{layer_path}`.strip.split("\n")
 
       puts "Info:\n\n#{info.join("\n")}"
@@ -179,9 +190,13 @@ class CLI < Thor
         exit
       end
 
-      layer_name = /^1: (.+)/.match(layer_line)[1]
+      layer_name = layer_name || /^1: (.+)/.match(layer_line)[1]
 
-      summary = `ogrinfo -so #{layer_path} #{layer_name}`.strip.split("\n")
+      command = "ogrinfo -so #{layer_path} \"#{layer_name}\""
+
+      puts command
+
+      summary = `#{command}`.strip.split("\n")
 
       puts "Layer:\n\n#{summary.join("\n")}"
 
@@ -204,10 +219,8 @@ class CLI < Thor
         extents: extents }
     end
 
-    def stylesheet(mss, info)
+    def stylesheet(mss, info, geom_type)
       declarations = []
-
-      geom_type = geometry_type(info[:type])
 
       PROPERTIES.each do |prop|
         next if geom_type != 'polygon' && prop.to_s =~ /polygon/
