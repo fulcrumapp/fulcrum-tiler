@@ -105,7 +105,7 @@ class CLI < Thor
         }
       end
 
-      print_header "Creating project and stylesheet"
+      print_header "Creating project and stylesheet for #{geom_type}"
 
       mss = stylesheet(mss_file, info, geom_type)
 
