@@ -174,7 +174,12 @@ class CLI < Thor
 
       layer_line = info.find {|line| line =~ /^1:/}
 
-      layer_name = layer_line.split(' ')[1]
+      if !layer_line
+        puts "Invalid layer"
+        exit
+      end
+
+      layer_name = /^1: (.+)/.match(layer_line)[1]
 
       summary = `ogrinfo -so #{layer_path} #{layer_name}`.strip.split("\n")
 
