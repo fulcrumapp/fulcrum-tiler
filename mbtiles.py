@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from shutil import copyfile
 import os
 import sys
+import platform
 
 parser = ArgumentParser()
 parser.add_argument("--input", dest="input", required=True,
@@ -37,6 +38,11 @@ parser.add_argument("--output", dest="output", default="output",
 
 args = parser.parse_args()
 
+if platform.system() == "Windows":
+    try:
+        os.mkdir("app")
+    except:
+        pass
 app_path = os.path.join(os.getcwd(), "app")
 input_path = os.path.join(os.getcwd(), "input")
 output_path = os.path.join(os.getcwd(), "output")
