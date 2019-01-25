@@ -38,14 +38,14 @@ parser.add_argument("--output", dest="output", default="output",
 
 args = parser.parse_args()
 
-if platform.system() == "Windows":
-    try:
-        os.mkdir("app")
-    except:
-        pass
 app_path = os.path.join(os.getcwd(), "app")
 input_path = os.path.join(os.getcwd(), "input")
 output_path = os.path.join(os.getcwd(), "output")
+
+try:
+    os.makedirs(app_path)
+except:
+    pass
 
 try:
     os.makedirs(input_path)
