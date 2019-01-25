@@ -1,7 +1,7 @@
 FROM starefossen/ruby-node:2-6-slim
 
 RUN apt-get update \
-    && apt-get install -y git gdal-bin \
+    && apt-get install -y git gdal-bin python-gdal vim \
     && git clone https://github.com/florianf/tileoven.git /tileoven
 
 WORKDIR /tileoven

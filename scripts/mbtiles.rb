@@ -178,6 +178,10 @@ class CLI < Thor
       puts "Finished writing MBTiles file to #{final_path}"
     end
 
+    def layer_names(layer_path)
+      `python /tileoven/scripts/layer-info.py #{layer_path}`.strip.split("\n")
+    end
+
     def layer_info(layer_path, layer_name=nil)
       info = `ogrinfo #{layer_path}`.strip.split("\n")
 
@@ -190,7 +194,7 @@ class CLI < Thor
         exit
       end
 
-      layer_name = layer_name || /^1: (.+)/.match(layer_line)[1]
+      layer_name = layer_name || layer_names(layer_path).first
 
       command = "ogrinfo -so #{layer_path} \"#{layer_name}\""
 
